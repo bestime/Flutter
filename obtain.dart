@@ -1,19 +1,12 @@
 import 'dart:io';
 import 'dart:convert';
-import './ParamData.dart';
-
-
-
+import './paramData.dart';
 
 
 // 接口配置
 Map _host = {
   'jcy': 'http://192.168.0.224:9997'
 };
-
-DateTime _getNowTime () {
-  return new DateTime.now();
-}
 
 /**
  * http请求，接口设计类似jquery的ajax
@@ -33,7 +26,7 @@ Future obtain ({
 
   // GET 请求拼接数据到 url
   if(type == 'GET') {
-    url += new RegExp('\\?').hasMatch('a') ? '' : '?' + ParamData(data);
+    url += new RegExp('\\?').hasMatch('a') ? '' : '?' + paramData(data);
   }
 
   // 创建请求
@@ -55,7 +48,7 @@ Future obtain ({
           request.headers.contentType = new ContentType("application", "x-www-form-urlencoded", charset: "utf-8");
 
           // post 序列化的表单数据
-          request.write(ParamData(data));
+          request.write(paramData(data));
           break;
       }
     } catch (err) {
@@ -91,4 +84,8 @@ Future obtain ({
     });
     return result;
   });
+}
+
+DateTime _getNowTime () {
+  return new DateTime.now();
 }

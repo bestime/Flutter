@@ -1,26 +1,24 @@
-
 import './isEmpty.dart';
 
 /**
  * 序列化字符串，参照以前JS写的ParamData
  */
 
-String ParamData (Map data) {
+String paramData (Map data) {
   String res = '';
-
-  void addOne (String key, dynamic value) {
-    if(value is Function) {
-      value = value();
-    } else if(isEmpty(value)) {
-      value = '';
-    } else if(value is num) {
-      value = value.toString();
+  void addOne (String key, dynamic item) {
+    if(item is Function) {
+      item = item();
+    } else if(isEmpty(item)) {
+      item = '';
+    } else {
+      item = item.toString();
     }
-    res = res + (isEmpty(res) ? '' : '&') + Uri.encodeComponent(key) + '=' + Uri.encodeComponent(value);
+    res = res + (isEmpty(res) ? '' : '&') + Uri.encodeComponent(key) + '=' + Uri.encodeComponent(item);
   }
 
   void buildParam (String prefix, dynamic item) {
-    if(!isEmpty(prefix)) {
+    if(prefix != '') {
       if(item is List) {
         for(var index = 0; index < item.length; index++) {
           buildParam('$prefix[${item[index] is Map && item[index] ? index : ''}]', item[index]);
@@ -37,7 +35,7 @@ String ParamData (Map data) {
         buildParam(key, val);
       });
     }
-  };
+  }
 
   buildParam('', data);
   
