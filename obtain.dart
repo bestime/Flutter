@@ -2,6 +2,10 @@ import 'dart:io';
 import 'dart:convert';
 import './ParamData.dart';
 
+
+
+
+
 // 接口配置
 Map _host = {
   'jcy': 'http://192.168.0.224:9997'
@@ -12,8 +16,9 @@ DateTime _getNowTime () {
 }
 
 /**
- * http请求
- *
+ * http请求，接口设计类似jquery的ajax
+ * @author Bestime
+ * @return {Future}
  */
 Future obtain ({
   String url = '', // 请求地址，支持使用变量表示开发人员的域名 例：{{worker01}}/login
