@@ -39,6 +39,6 @@ String paramData (Map data) {
 
   buildParam('', data);
   
-//  print('结果：$res');
+  print('结果：$res');
   return res;
 }

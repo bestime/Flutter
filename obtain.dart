@@ -8,7 +8,7 @@ Map _host = {
   'jcy': 'http://192.168.0.224:9997'
 };
 
-/**
+/*
  * http请求，接口设计类似jquery的ajax
  * @author Bestime
  * @return {Future}
