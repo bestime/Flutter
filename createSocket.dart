@@ -10,9 +10,7 @@ void createSocket ({ String url = '' }) async {
   WebSocket ws = await WebSocket.connect(url).catchError((err) {
     print('socket连接错误');
   });
-
-  print('socket 连接成功');
-
+  
   ws.add('你好呀');
 
   ws.listen(

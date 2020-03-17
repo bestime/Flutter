@@ -1,34 +1,31 @@
 import 'package:flutter/material.dart';
-import './OverlayWrapper.dart';
-import './setTimeout.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutterapp/BestimeDart/setTimeout.dart';
+import './CreateLayer.dart';
 import 'dart:async';
-
-
-
-
-const _activeColor = Color.fromRGBO(255,255,255, 1);
 const _backgroundColor = Color.fromRGBO(0, 0, 0, 0.9);
+const _activeColor = Color.fromRGBO(255,255,255, 1);
 
 class Loading {
-  bool dismissed = false;
-  static Function _update;
+  static CreateLayer _cty = new CreateLayer(false);
   static Timer _timer;
-  static dynamic oWrapper;
-  static int _duration = 15000; // 自动关闭
-  
-  // static OverlayWrapper tv = new OverlayWrapper();
-  
-  static Future show (BuildContext context, String msg) async {    
+  static Function _update;
+
+
+  static close () {
+    _update = null;
+    _cty.close();
+  }
+
+  static Future show (BuildContext context, String msg, [int duration = 15000]) async {
     _timer?.cancel();
-    if(_update!=null) { 
+    _timer = setTimeout(close, duration);
+    if(_update!=null) {
       _update(msg);
-      _timer = setTimeout(close, _duration);
     } else {
-      _timer = setTimeout(close, _duration);
-      
-      await OverlayWrapper.show(
+      await _cty.show(
         context: context,
-        builder: (context, constraints) {
+        builder: (ctx, constraints) {
           String message = msg;
           return StatefulBuilder(
             builder: (context, state) {     
@@ -70,13 +67,8 @@ class Loading {
               );
             },
           );
-        },
+        }
       );
     }
-  }
-
-  static close () {
-    OverlayWrapper.close(); // 关闭上一个
-    _update = null;
   }
 }
