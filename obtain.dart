@@ -19,6 +19,8 @@ Future obtain ({
   Map data = const {}, // 请求数据
 }) async {
   type = type.toUpperCase(); // 请求类型 转大写
+  url = url.replaceAll(new RegExp('\\?\$'), '');
+  url = url.replaceAll(new RegExp('\&\$'), '');
   // 处理 url 中的变量
   url = url.replaceAllMapped(new RegExp('{{.*?}}'), (Match match) {
     return _host[match[0].replaceAll(new RegExp('{|}'), '')];
@@ -26,7 +28,10 @@ Future obtain ({
 
   // GET 请求拼接数据到 url
   if(type == 'GET') {
-    url += new RegExp('\\?').hasMatch('a') ? '' : '?' + paramData(data);
+    String _pData = paramData(data);
+    if(_pData!=null && _pData!='') {
+      url += (new RegExp('\\?').hasMatch(url) ? '&' : '?') + _pData;
+    }
   }
 
   // 创建请求

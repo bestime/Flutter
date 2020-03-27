@@ -44,9 +44,8 @@ class CreateLayer {
             return builder(a, b);
           }
         );
-        return IgnorePointer(
-          ignoring: this.ignoring,
-          child: Container(
+        
+        return _Wrapper(ignoring, Container(
             decoration: BoxDecoration(
               color: ShortSetting.transparentColor
             ),
@@ -63,9 +62,27 @@ class CreateLayer {
   close () {
     if (this.active) {
       this._mounted = false;
-      overlayEntry?.remove();
+      this.overlayEntry?.remove();
       this.active = false;
-      overlayEntry = null;
+      this.overlayEntry = null;
     }
+  }
+}
+
+class _Wrapper extends StatelessWidget{
+  final bool ignoring;
+  final Widget child;
+  _Wrapper(this.ignoring, this.child);
+  
+  @override
+  Widget build (BuildContext context) {
+    return !this.ignoring
+      ? Container(
+        child: child,
+      )
+      : IgnorePointer(
+        ignoring: true,
+        child: child
+      );
   }
 }
