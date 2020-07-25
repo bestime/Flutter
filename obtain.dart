@@ -65,14 +65,22 @@ Future obtain ({
     }
 
     var result = await request.close().then((response) async {
-      if (response.statusCode == HttpStatus.OK) {
+      if (response.statusCode == HttpStatus.ok) {
         return await response.transform(utf8.decoder).join().then((json) {
-          Map<String, dynamic> res = jsonDecode(json);
+          print('=================> $json');
+          Map<String, dynamic> res;
+          try {
+           res =  jsonDecode(json);
+          } catch (e){
+            res = {
+              'data': json
+            };
+          }
           print('[${_getNowTime()}] 结果[$type]请求 $uri 成功 => $res');
           return res;
         });
       } else {
-        print('[${_getNowTime()}] [$type]状态异常 $uri => ${response}');
+        print('[${_getNowTime()}] [$type]状态异常 $uri => $response');
         throw Exception({
           'code': -3,
           'msg': '状态异常',

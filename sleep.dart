@@ -1,9 +1,8 @@
 
 /*
  * 延迟执行
- * @param {int} msec 等待时间（毫秒） 
- * @return {Future}
+ * @param {milliseconds} 等待时间（毫秒）
  */
-Future sleep (int msec) async {
-  await Future.delayed(Duration(milliseconds: msec));
+Future sleep (int milliseconds) async {
+  await Future.delayed(Duration(milliseconds: milliseconds));
 }

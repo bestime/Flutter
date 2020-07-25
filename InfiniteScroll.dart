@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 import './tool/ColorTool.dart';
 import './sleep.dart';
 
-
 final Color _defaultBackgroundColor = ColorTool.transparent;
-
-
 
 
 // 无缝滚动 支持（上、下、左、右）
 // 尺寸小于一屏不滚动
 // 大于一屏补齐两屏
+// 按下状态会停止滚动
 
 class InfiniteScroll extends StatefulWidget {
   final Axis direction; // 滚动方向
@@ -52,6 +50,8 @@ class _InfiniteScroll extends State<InfiniteScroll> {
   double _partSize;
   double _duration;
   final GlobalKey globalKey = GlobalKey();
+  bool _lock = false; // 暂时禁用滚动，用于按下时停止不能动
+  bool _scrolling = false;
 
   void _startScroll () async {
     await sleep(30);
@@ -59,8 +59,9 @@ class _InfiniteScroll extends State<InfiniteScroll> {
   }
 
   // 水平滚动
-  void _scrollOnce () async {    
-    
+  void _scrollOnce () async {
+    if(_lock || _scrolling) return null;
+    _scrolling = true;
     try {
       maxScrollSize = _scrollController.position.maxScrollExtent;
     } catch (e) {
@@ -86,6 +87,7 @@ class _InfiniteScroll extends State<InfiniteScroll> {
     _partSize = _itemSize + wrapperSize;
     if(position == _partSize) {
       _scrollController.jumpTo(0);
+      _scrolling = false;
       _scrollOnce(); 
     } else {
       _duration = widget.period * 1.0;
@@ -103,8 +105,9 @@ class _InfiniteScroll extends State<InfiniteScroll> {
         duration: new Duration(milliseconds: _duration.toInt()),
         curve: Curves.linear
       ).then((ad) {
+        _scrolling = false;
         _scrollOnce(); 
-      });      
+      });
     }
   }
   
@@ -124,29 +127,38 @@ class _InfiniteScroll extends State<InfiniteScroll> {
       }
     }
     
-    return Container(
-      margin: EdgeInsets.all(0), // 如果要设置margin。请在外面布局。     
-      height: widget.size,
-      decoration: BoxDecoration(
-        color: widget.backgroundColor ?? _defaultBackgroundColor
-      ),
-      child: Stack(
-        children: <Widget>[
-          ListView(
-            padding: EdgeInsets.all(0),
-            dragStartBehavior: DragStartBehavior.down,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            reverse: widget.reverse,
-            controller: _scrollController,
-            scrollDirection: widget.direction,
-            children: childList.length == 2
-              ? childList 
-              : [_ScrollItem(widget.child)],
-          ),
-          widget.maskLeft==null ? Container() : _getMaskSlide('left', widget.maskLeft),
-          widget.maskRight==null ? Container() : _getMaskSlide('right', widget.maskRight),
-        ],
+    return Listener(
+      onPointerDown: (ev) {
+        _lock = true;
+      },
+      onPointerUp: (ev) {
+        _lock = false;
+        _scrollOnce();
+      },
+      child: Container(
+        margin: EdgeInsets.all(0), // 如果要设置margin。请在外面布局。     
+        height: widget.size,
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? _defaultBackgroundColor
+        ),
+        child: Stack(
+          children: <Widget>[
+            ListView(
+              padding: EdgeInsets.all(0),
+              dragStartBehavior: DragStartBehavior.down,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              reverse: widget.reverse,
+              controller: _scrollController,
+              scrollDirection: widget.direction,
+              children: childList.length == 2
+                ? childList 
+                : [_ScrollItem(widget.child)],
+            ),
+            widget.maskLeft==null ? Container() : _getMaskSlide('left', widget.maskLeft),
+            widget.maskRight==null ? Container() : _getMaskSlide('right', widget.maskRight),
+          ],
+        ),
       ),
     );
   }

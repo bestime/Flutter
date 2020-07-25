@@ -12,6 +12,12 @@ class EasySwiper extends StatefulWidget {
   final Color dotStaticColor; // 小圆点静态颜色
   final Color dotActiveColor; // 小圆点高亮颜色
   final IndexCallback onChange; // 切换后回调  
+  final bool autoPlay; // 是否自动轮播
+  final int autoPlayFrequency; // 自动轮播频率（毫秒）
+  final int autoPlayDuration; // 自动轮播过渡时间（毫秒）
+  final Curve curve; // 过渡动画效果
+  final double scale; // 缩放 （0-1）
+
   
   
   EasySwiper({
@@ -19,7 +25,12 @@ class EasySwiper extends StatefulWidget {
     this.dotActiveColor,
     this.dotStaticColor,
     this.showDot = true,
-    this.onChange
+    this.onChange,
+    this.autoPlay = true,
+    this.autoPlayFrequency = 2000,
+    this.autoPlayDuration = 700,
+    this.curve = Curves.ease,
+    this.scale = 1.0
   });
 
   @override
@@ -29,38 +40,36 @@ class EasySwiper extends StatefulWidget {
 }
 
 class _EasySwiper extends State<EasySwiper> {
-  PageController _controller = new PageController(
-    initialPage: 0,
-    keepPage: true,
-    viewportFraction: 1
-  );
+  PageController _controller;
   Timer _timer;
   double distence = 0.0;
   int currentPage = 0;
   bool directionInversion = false; // 是否往回播放
   int computedPage = 0;
+  bool _autoScrolled = false;// 是否已经开始自动轮播，初始化的时候没有数据，导致不触发changed从而自动轮播失效
 
 
   @override
   void initState () {
     super.initState();
-    _controller.addListener(() {
-      _timer?.cancel();
-    });
-
-    // autoPlay();
+    _controller = new PageController(
+      initialPage: 0,
+      keepPage: true,
+      viewportFraction: widget.scale
+    );
   }
 
 
   void moveOnce (int toPage) async {
     await _controller.animateToPage(
       toPage,
-      duration: Duration(milliseconds: 500),
-      curve: Curves.ease
+      duration: Duration(milliseconds: widget.autoPlayDuration),
+      curve: widget.curve
     );
   }
 
-  void autoPlay () {
+  void comminAutoPlay () {
+    if(!widget.autoPlay) return null;
     if(directionInversion) {
       computedPage = currentPage - 1;
       if(computedPage < 0) {
@@ -72,41 +81,52 @@ class _EasySwiper extends State<EasySwiper> {
         computedPage = 0;
       }
     }
-
+    
     _timer?.cancel();
     _timer = setTimeout((){
       moveOnce(computedPage);
-    }, 1000);
+    }, widget.autoPlayFrequency);
   }
 
-  void _onChange (int index) {
+  void _onChange (int index) async {
+    if(index==0) {
+      directionInversion = false;
+    } else if(index < currentPage || index == widget.children.length -1) {
+      directionInversion = true;
+    } 
     setState(() {
       currentPage = index; 
-    });       
-    if(index == widget.children.length -1) {
-      directionInversion = true;
-    } else if(index==0) {
-      directionInversion = false;
-    }
-    autoPlay();
+    });
+    comminAutoPlay();    
     if(widget.onChange != null) {
       widget.onChange(index);
     }
   }
-
   
 
   @override
   Widget build (BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        PageView(
-          children: widget.children,
-          controller: _controller,
-          onPageChanged: _onChange,
-        ),
-        widget.showDot ? _Dots(widget, widget.children.length, currentPage) : Container()
-      ],
+    if(!_autoScrolled && widget.children.length > 0) {
+      _autoScrolled = true;
+      comminAutoPlay();
+    }
+    return Listener(
+      onPointerDown: (ev) {
+        _timer?.cancel();
+      },
+      onPointerUp: (ev) {
+        comminAutoPlay();
+      },
+      child: Stack(
+        children: <Widget>[
+          PageView(
+            children: widget.children,
+            controller: _controller,
+            onPageChanged: _onChange,
+          ),
+          widget.showDot ? _Dots(widget, widget.children.length, currentPage) : Container()
+        ],
+      ),
     );
   }
 }
@@ -116,9 +136,6 @@ class _Dots extends StatelessWidget {
   final int index;
   final dynamic opt;
   _Dots(this.opt, this.total, this.index);
-  
-  
-
   
   
   @override
@@ -137,8 +154,8 @@ class _Dots extends StatelessWidget {
             decoration: BoxDecoration(
               color: index == a ? _dotActiveColor : 
             _dotStaticColor),
-            width: 20,
-            height: 7
+            width: 10,
+            height: 2
           ),
         ),
       ));

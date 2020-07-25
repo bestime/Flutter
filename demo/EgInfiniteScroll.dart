@@ -4,7 +4,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterapp/BestimeDart/tool/ColorTool.dart';
 import '../InfiniteScroll.dart';
 
 Widget _getZfx (int count) {

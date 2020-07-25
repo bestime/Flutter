@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutterapp/BestimeDart/setTimeout.dart';
+import './setTimeout.dart';
 import './CreateLayer.dart';
 import 'dart:async';
-const _backgroundColor = Color.fromRGBO(0, 0, 0, 0.9);
-const _activeColor = Color.fromRGBO(255,255,255, 1);
+const Color _backgroundColor = Color.fromRGBO(0, 0, 0, 0.9);
+const Color _activeColor = Color.fromRGBO(255,255,255, 1);
 
 class Loading {
   static CreateLayer _cty = new CreateLayer(false);
   static Timer _timer;
   static Function _update;
-
 
   static close () {
     _update = null;

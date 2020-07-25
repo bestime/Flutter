@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import './config/ShortSetting.dart';
 import 'dart:async' show Completer;
 
-/**
- * 创建一个全屏的遮罩
- * 内容可自定义
- * 提供 show => 显示 
- * 提供 close => 关闭 
- */
+
+///创建一个全屏的遮罩
+///内容可自定义
+///提供 show => 显示
+///提供 close => 关闭
 class CreateLayer {
   OverlayEntry overlayEntry;
   OverlayState overlayState;

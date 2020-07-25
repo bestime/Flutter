@@ -1,9 +1,6 @@
 import './isEmpty.dart';
 
-/**
- * 序列化字符串，参照以前JS写的ParamData
- */
-
+/// 序列化字符串，参照以前JS写的ParamData
 String paramData (Map data) {
   String res = '';
   void addOne (String key, dynamic item) {
@@ -38,7 +35,5 @@ String paramData (Map data) {
   }
 
   buildParam('', data);
-  
-  print('结果：$res');
   return res;
 }

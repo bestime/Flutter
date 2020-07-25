@@ -1,9 +1,7 @@
-/**
- * 清空数组和json空值数据
- * @param {dynamic} data 需要处理的数据
- * @param {?Boolean} removeEmptyStr 是否需移除留空字符串，默认false
- * @return {dynamec} 返回处理结果
- * */
+///清空数组和json空值数据
+/// @param {dynamic} data 需要处理的数据
+/// @param {?Boolean} removeEmptyStr 是否需移除留空字符串，默认false
+/// @return {dynamec} 返回处理结果
 dynamic clean (dynamic data, [bool removeEmptyStr = false]) {
   dynamic res;
   if(data is Map) {

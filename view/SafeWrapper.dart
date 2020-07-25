@@ -3,10 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-/**
- * 自动撑开顶部导航栏的容器 
- */
-
+/// 自动撑开顶部导航栏的容器
 class SafeWrapper extends StatelessWidget {
   final Widget child;
   final Color backgroundColor;

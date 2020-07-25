@@ -3,8 +3,8 @@
 
 
 import 'package:flutter/cupertino.dart';
-import './tool/ColorTool.dart';
-import './YBorderRadiusBox.dart';
+import 'package:flutter/material.dart';
+
 
 
 
@@ -28,46 +28,27 @@ class GestureBox extends StatefulWidget {
 }
 
 class _GestureBox extends State<GestureBox> {
-  bool _isDown = false;
   @override
   Widget build (BuildContext context) {
-    return GestureDetector(
-      onPanCancel: () {
-        print(9999999999);
+    return Listener(
+      onPointerDown: (down) {
+        print("onPointerDownEvent");
       },
-      child: widget.child,
-      onTapDown: (ev) {
-        _isDown = true;
-        if(widget.onPress!=null) {
-          widget.onPress();  
-        }
+      onPointerMove: (move) {
+        print("onPointerMove");
       },
-      onTapUp: (ev) {
-        _isDown = false;
-        if(widget.onLeave!=null) {
-          widget.onLeave();  
-        }
+      onPointerUp: (up) {
+        print("onPointerUp");
       },
-      onTap: () {
-        if(_isDown && widget.onClick!=null) {
-          widget.onClick();  
-          _isDown = false;
-        }
+      onPointerCancel: (cancle){
+        print("onPointerCancel");
       },
-      onVerticalDragUpdate: (ev) {
-        // print('y => ${ev.delta.dy}');
-        if(_isDown && widget.onLeave!=null) {
-          widget.onLeave();  
-          _isDown = false;
-        }
-      },
-      onHorizontalDragUpdate: (ev) {
-        // print('x => ${ev.delta.dx} => ${context.size}');
-        if(_isDown && widget.onLeave!=null) {
-          widget.onLeave();  
-          _isDown = false;
-        }
-      }
+      child: Center(
+        child: Text(
+          "test",
+          textDirection: TextDirection.ltr,
+        ),
+      ),
     );
   }
 }

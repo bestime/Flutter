@@ -1,13 +1,5 @@
-
-
-
-
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-
 
 class JcyAnimateSlide extends StatefulWidget {
   final Widget child;
@@ -35,7 +27,8 @@ class _JcyAnimateSlide extends State<JcyAnimateSlide> with SingleTickerProviderS
 
   @override
   void didUpdateWidget (oldWidget) {
-    // print('变了 ${widget.active}');
+    super.didUpdateWidget(oldWidget);
+
     if(widget.active) {
       controller.forward();
     } else {
@@ -67,7 +60,6 @@ class _JcyAnimateSlide extends State<JcyAnimateSlide> with SingleTickerProviderS
     new CurvedAnimation(parent: controller, curve: widget.curve);
     animation = Tween(begin: Offset(0, 1), end: Offset(0, 0)).animate(curve);
   }
-
 
   @override
   Widget build (BuildContext context) {
